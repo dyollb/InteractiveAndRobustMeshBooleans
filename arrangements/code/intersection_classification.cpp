@@ -956,6 +956,7 @@ inline bool genericPointInsideTriangle(const TriangleSoup &ts, uint p_id, uint t
         }
 
         case ZX:
+        default:
         {
             if(strict)
                 return ((genericPoint::orient2Dzx(*tv0, *tv1, *p) > 0 && genericPoint::orient2Dzx(*tv1, *tv2, *p) > 0 && genericPoint::orient2Dzx(*tv2, *tv0, *p) > 0) ||
@@ -965,7 +966,6 @@ inline bool genericPointInsideTriangle(const TriangleSoup &ts, uint p_id, uint t
                         (genericPoint::orient2Dzx(*tv0, *tv1, *p) <= 0 && genericPoint::orient2Dzx(*tv1, *tv2, *p) <= 0 && genericPoint::orient2Dzx(*tv2, *tv0, *p) <= 0));
         }
     }
-
 }
 
 

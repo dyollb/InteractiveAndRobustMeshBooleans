@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/arrangem
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
 
-add_executable(${PROJECT_NAME}_rotation main-rotation.cpp)
+add_executable(${PROJECT_NAME}_rotation EXCLUDE_FROM_ALL main-rotation.cpp)
 
 target_include_directories(${PROJECT_NAME}_rotation PUBLIC
     ./
@@ -60,7 +60,7 @@ target_compile_definitions(${PROJECT_NAME}_rotation PUBLIC TBB_PARALLEL=1)
 target_include_directories(${PROJECT_NAME}_rotation PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
 target_include_directories(${PROJECT_NAME}_rotation PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
-add_executable(${PROJECT_NAME}_arap main-arap.cpp)
+add_executable(${PROJECT_NAME}_arap EXCLUDE_FROM_ALL main-arap.cpp)
 
 target_include_directories(${PROJECT_NAME}_arap PUBLIC
     ./
@@ -75,7 +75,7 @@ target_compile_definitions(${PROJECT_NAME}_arap PUBLIC TBB_PARALLEL=1)
 target_include_directories(${PROJECT_NAME}_arap PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
 target_include_directories(${PROJECT_NAME}_arap PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
-add_executable(${PROJECT_NAME}_stencil main-stencil.cpp)
+add_executable(${PROJECT_NAME}_stencil EXCLUDE_FROM_ALL main-stencil.cpp)
 
 target_include_directories(${PROJECT_NAME}_stencil PUBLIC
     ./
@@ -91,7 +91,7 @@ target_include_directories(${PROJECT_NAME}_stencil PUBLIC ${PROJECT_SOURCE_DIR}/
 target_include_directories(${PROJECT_NAME}_stencil PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
 
-add_executable(${PROJECT_NAME}_inputcheck main-inputcheck.cpp)
+add_executable(${PROJECT_NAME}_inputcheck EXCLUDE_FROM_ALL main-inputcheck.cpp)
 
 target_include_directories(${PROJECT_NAME}_inputcheck PUBLIC
         ./

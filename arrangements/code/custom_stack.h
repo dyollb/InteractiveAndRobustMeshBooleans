@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cassert>
+#include <stdexcept>
 #include <aux_structure.h>
 
 class CustomStack
@@ -94,7 +95,7 @@ public:
         }
 
         assert(false && "Triplet not found!");
-        return auxvector<uint>(); // Triplet not found
+        throw std::runtime_error("Triplet not found");
     }
 
 
