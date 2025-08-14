@@ -69,7 +69,7 @@ struct DuplTriInfo
     bool w;
 };
 
-enum BoolOp {UNION, INTERSECTION, SUBTRACTION, XOR, NONE};
+enum BoolOp {UNION, INTERSECTION, SUBTRACTION, XOR, NONREG, NONE};
 
 enum IntersInfo {DISCARD, NO_INT, INT_IN_V0, INT_IN_V1, INT_IN_V2, INT_IN_EDGE01, INT_IN_EDGE12, INT_IN_EDGE20, INT_IN_TRI};
 
@@ -193,6 +193,8 @@ inline uint boolUnion(FastTrimesh &tm, const Labels &labels);
 inline uint boolSubtraction(FastTrimesh &tm, const Labels &labels);
 
 inline uint boolXOR(FastTrimesh &tm, const Labels &labels);
+
+inline uint boolNonreg(FastTrimesh &tm, const Labels &labels);
 
 inline uint bitsetToUint(const std::bitset<NBIT> &b);
 

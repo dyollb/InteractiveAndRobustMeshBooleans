@@ -67,11 +67,14 @@ inline void customBooleanPipeline(std::vector<genericPoint*>& arr_verts, std::ve
         num_tris_in_final_solution = boolSubtraction(tm, labels);
     else if(op == XOR)
         num_tris_in_final_solution = boolXOR(tm, labels);
+    else if(op == NONREG)
+        num_tris_in_final_solution = boolNonreg(tm, labels);
     else
     {
         std::cerr << "boolean operation not implemented yet" << std::endl;
         std::exit(EXIT_FAILURE);
     }
+    std::cerr << "num_tris_in_final_solution: " << num_tris_in_final_solution << std::endl;
 
     computeFinalExplicitResult(tm, labels, num_tris_in_final_solution, bool_coords, bool_tris, bool_labels, true);
 }
@@ -1481,6 +1484,46 @@ inline uint boolXOR(FastTrimesh &tm, const Labels &labels)
             tm.flipTri(t_id);
     }
 
+    return num_tris_in_final_solution;
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline uint boolNonreg(FastTrimesh &tm, const Labels &labels)
+{
+    uint num_tris_in_final_solution = 0;
+    tm.resetTrianglesInfo();
+
+    for(uint t_id = 0; t_id < tm.numTris(); t_id++)
+    {
+        bool keep_triangle = true;
+        
+        if(labels.inside[t_id].count() >= 1)
+        {
+            // Find the surface mesh ID and the containing mesh ID
+            uint surface_id = NBIT;
+            uint inside_id = NBIT;
+            
+            for(uint i = 0; i < NBIT; i++)
+            {
+                if(labels.surface[t_id][i]) surface_id = i;
+                if(labels.inside[t_id][i]) inside_id = i;
+            }
+            
+            // Keep if triangle is contained by a mesh with lower ID than its surface mesh
+            keep_triangle = inside_id < surface_id;
+        }
+        
+        if(keep_triangle)
+        {
+            tm.setTriInfo(t_id, 1);
+            num_tris_in_final_solution++;
+        }
+    }
+
+    // No orientation flipping needed for non-regularized union
+    // as we keep original orientations
+    
     return num_tris_in_final_solution;
 }
 

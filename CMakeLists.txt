@@ -130,7 +130,7 @@ else()
         target_compile_options(${PROJECT_NAME} PUBLIC -frounding-math)
         # set target architecture
         if(ENABLE_AVX2)
-                target_compile_options(${PROJECT_NAME} PUBLIC "-mavx2")
+                set_property(TARGET ${PROJECT_NAME} PROPERTY ISPC_INSTRUCTION_SETS avx2-i32x4)
         elseif(ENABLE_SSE2)
                 target_compile_options(${PROJECT_NAME} PUBLIC "-msse2")
         endif()
