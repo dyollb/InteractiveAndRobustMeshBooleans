@@ -38,4 +38,6 @@ namespace mesh_booleans {
         const BoolOp& operation, 
         Mesh& output, 
         std::vector<std::bitset<32>>& labels);
+
+    MESH_BOOLEANS_API void ResolveIntersections(const Mesh& mesh, Mesh& output);
 }

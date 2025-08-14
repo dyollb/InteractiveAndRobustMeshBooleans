@@ -1,6 +1,7 @@
 #include "boolean_api.h"
 
 #include "booleans.h"
+#include "solve_intersections.h"
 
 namespace mesh_booleans {
 
@@ -57,6 +58,31 @@ void BooleanOperation(
     }
     for (size_t i = 0; i < bool_tris.size(); i += 3) {
         output.triangles.push_back({ bool_tris[i], bool_tris[i + 1], bool_tris[i + 2] });
+    }
+}
+
+void ResolveIntersections(const Mesh& mesh, Mesh& output)
+{
+    std::vector<double> in_coords, out_coords;
+    for (const auto& vertex : mesh.vertices) {
+        in_coords.insert(in_coords.end(), vertex.begin(), vertex.end());
+    }
+    std::vector<uint> in_tris, out_tris;
+    for (const auto& triangle : mesh.triangles) {
+        in_tris.insert(in_tris.end(), triangle.begin(), triangle.end());
+    }
+
+    point_arena arean;
+    solveIntersections(in_coords, in_tris, arean, out_coords, out_tris);
+
+    output.vertices.reserve(out_coords.size() / 3);
+    output.triangles.reserve(out_tris.size() / 3);
+
+    for (size_t i = 0; i < out_coords.size(); i += 3) {
+        output.vertices.push_back({ out_coords[i], out_coords[i + 1], out_coords[i + 2] });
+    }
+    for (size_t i = 0; i < out_tris.size(); i += 3) {
+        output.triangles.push_back({ out_tris[i], out_tris[i + 1], out_tris[i + 2] });
     }
 }
 

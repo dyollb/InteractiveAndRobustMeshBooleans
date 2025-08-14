@@ -74,7 +74,6 @@ inline void customBooleanPipeline(std::vector<genericPoint*>& arr_verts, std::ve
         std::cerr << "boolean operation not implemented yet" << std::endl;
         std::exit(EXIT_FAILURE);
     }
-    std::cerr << "num_tris_in_final_solution: " << num_tris_in_final_solution << std::endl;
 
     computeFinalExplicitResult(tm, labels, num_tris_in_final_solution, bool_coords, bool_tris, bool_labels, true);
 }

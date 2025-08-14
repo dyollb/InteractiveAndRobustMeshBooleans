@@ -61,7 +61,7 @@ inline void meshArrangementPipeline(const std::vector<double> &in_coords, const 
 
     classifyIntersections(ts, arena, g);
 
-    triangulation(ts, arena, g, out_tris, out_labels);
+    triangulation(ts, arena, g, out_tris, out_labels, true);
 
     ts.appendJollyPoints();
 }
