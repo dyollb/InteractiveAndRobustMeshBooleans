@@ -106,7 +106,12 @@ target_compile_definitions(${PROJECT_NAME}_inputcheck PUBLIC TBB_PARALLEL=1)
 target_include_directories(${PROJECT_NAME}_inputcheck PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
 target_include_directories(${PROJECT_NAME}_inputcheck PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
-add_library(${PROJECT_NAME}_lib SHARED code/boolean_api.cpp)
+option(MESH_BOOLEANS_BUILD_SHARED "Build mesh_booleans library as shared instead of static" ON)
+if(MESH_BOOLEANS_BUILD_SHARED)
+    add_library(${PROJECT_NAME}_lib SHARED code/boolean_api.cpp)
+else()
+    add_library(${PROJECT_NAME}_lib STATIC code/boolean_api.cpp)
+endif()
 
 target_include_directories(${PROJECT_NAME}_lib PRIVATE
     ./
@@ -118,7 +123,9 @@ target_include_directories(${PROJECT_NAME}_lib PRIVATE
 target_link_libraries(${PROJECT_NAME}_lib cinolib)
 target_link_libraries(${PROJECT_NAME}_lib tbb)
 target_compile_definitions(${PROJECT_NAME}_lib PUBLIC TBB_PARALLEL=1)
-target_compile_definitions(${PROJECT_NAME}_lib PRIVATE MESH_BOOLEANS_EXPORTS)
+if(MESH_BOOLEANS_BUILD_SHARED)
+    target_compile_definitions(${PROJECT_NAME}_lib PRIVATE MESH_BOOLEANS_EXPORTS)
+endif()
 target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
 target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
@@ -127,19 +134,24 @@ set_target_properties(${PROJECT_NAME}_lib PROPERTIES
     OUTPUT_NAME "mesh_booleans"
     VERSION 1.0.0
     SOVERSION 1
-    CXX_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN YES
 )
 
-# On Windows, set the DLL output directory
-if(WIN32)
+# Only set visibility and Windows properties for shared libraries
+if(MESH_BOOLEANS_BUILD_SHARED)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        CXX_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN YES
     )
+    
+    # On Windows, set the DLL output directory
+    if(WIN32)
+        set_target_properties(${PROJECT_NAME}_lib PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        )
+    endif()
 endif()
-
 
 set(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_lib)
 foreach(target IN LISTS TARGETS)
