@@ -1,3 +1,11 @@
+# This is a fork of [InteractiveAndRobustMeshBooleans](https://github.com/gcherchi/InteractiveAndRobustMeshBooleans.git)
+
+This fork contains some fixes and adds a wrapper library around the boolean operations described in "Interactive and Robust Mesh Booleans", and functionality to resolve intersections from the "Fast and Robust Mesh Arrangements using Floating-point Arithmetic" paper.
+
+An additional boolean operation, "non-regularized unite," has been introduced. Unlike standard unite, this operation preserves interfaces between different closed solids. However, interfaces that are fully contained within higher-priority solids (those with a higher index in the operand list) are removed.
+
+---
+
 > ⚠️ **IMPORTANT** ⚠️<br>
 > Dear users,
 we are flattered by the enthusiasm and interest around our tools but, unfortunately, we do not currently have the resources to keep up with the amount of requests for clarifications, modifications and fixes we receive. In case this is an important building block for your project and you are willing to financially sustain the maintenance/enhancement of our tool, please let us know. Conversely, we can no longer commit to readily address all your issues, as the amount of time necessary to do that heavily conflicts with our regular academic working routine.
