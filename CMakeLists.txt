@@ -18,7 +18,8 @@ project(mesh_booleans)
 
 set(TBB_TEST OFF CACHE BOOL " " FORCE)
 set(TBB_EXAMPLES OFF CACHE BOOL " " FORCE)
-add_subdirectory(arrangements/external/oneTBB)
+set(TBB_INSTALL OFF CACHE BOOL " " FORCE)
+add_subdirectory(arrangements/external/oneTBB EXCLUDE_FROM_ALL)
 
 
 # add the executable
@@ -105,33 +106,87 @@ target_compile_definitions(${PROJECT_NAME}_inputcheck PUBLIC TBB_PARALLEL=1)
 target_include_directories(${PROJECT_NAME}_inputcheck PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
 target_include_directories(${PROJECT_NAME}_inputcheck PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
 
-# Compiler-specific options
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        # grant IEEE 754 compliance
-        target_compile_options(${PROJECT_NAME} PUBLIC "/fp:strict")
-        # use intrinsic functions
-        target_compile_options(${PROJECT_NAME} PUBLIC "/Oi")
-        # set target architecture
-        if(ENABLE_AVX2)
-                target_compile_options(${PROJECT_NAME} PUBLIC "/arch:AVX2")
-        elseif(ENABLE_SSE2)
-                target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2")
-        endif()
-        # reserve enough stack size
-        target_link_options(${PROJECT_NAME} PUBLIC "/STACK:8421376")
-        # turn off annoying warnings
-        target_compile_options(${PROJECT_NAME} PUBLIC "/D _CRT_SECURE_NO_WARNINGS")
-else()
-        # set standard optimization level
-        target_compile_options(${PROJECT_NAME} PUBLIC -O2)
-        # reserve enough stack size
-        target_compile_options(${PROJECT_NAME} PUBLIC -Wl,-z,stacksize=8421376)
-        # grant IEEE 754 compliance
-        target_compile_options(${PROJECT_NAME} PUBLIC -frounding-math)
-        # set target architecture
-        if(ENABLE_AVX2)
-                set_property(TARGET ${PROJECT_NAME} PROPERTY ISPC_INSTRUCTION_SETS avx2-i32x4)
-        elseif(ENABLE_SSE2)
-                target_compile_options(${PROJECT_NAME} PUBLIC "-msse2")
-        endif()
+add_library(${PROJECT_NAME}_lib SHARED code/boolean_api.cpp)
+
+target_include_directories(${PROJECT_NAME}_lib PRIVATE
+    ./
+    code/
+    arrangements/code/
+    arrangements/external/Indirect_Predicates/include/
+)
+
+target_link_libraries(${PROJECT_NAME}_lib cinolib)
+target_link_libraries(${PROJECT_NAME}_lib tbb)
+target_compile_definitions(${PROJECT_NAME}_lib PUBLIC TBB_PARALLEL=1)
+target_compile_definitions(${PROJECT_NAME}_lib PRIVATE MESH_BOOLEANS_EXPORTS)
+target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/abseil-cpp/)
+target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/arrangements/external/oneTBB/)
+
+# Set shared library properties
+set_target_properties(${PROJECT_NAME}_lib PROPERTIES
+    OUTPUT_NAME "mesh_booleans"
+    VERSION 1.0.0
+    SOVERSION 1
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN YES
+)
+
+# On Windows, set the DLL output directory
+if(WIN32)
+    set_target_properties(${PROJECT_NAME}_lib PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    )
 endif()
+
+
+set(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_lib)
+foreach(target IN LISTS TARGETS)
+        # Compiler-specific options
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+                # grant IEEE 754 compliance
+                target_compile_options(${target} PUBLIC "/fp:strict")
+                # use intrinsic functions
+                target_compile_options(${target} PUBLIC "/Oi")
+                # set target architecture
+                if(ENABLE_AVX2)
+                        target_compile_options(${target} PUBLIC "/arch:AVX2")
+                elseif(ENABLE_SSE2)
+                        target_compile_options(${target} PUBLIC "/arch:SSE2")
+                endif()
+                # reserve enough stack size
+                target_link_options(${target} PUBLIC "/STACK:8421376")
+                # turn off annoying warnings
+                target_compile_options(${target} PUBLIC "/D _CRT_SECURE_NO_WARNINGS")
+        else()
+                # set standard optimization level
+                target_compile_options(${target} PUBLIC -O2)
+                # reserve enough stack size
+                target_compile_options(${target} PUBLIC -Wl,-z,stacksize=8421376)
+                # grant IEEE 754 compliance
+                target_compile_options(${target} PUBLIC -frounding-math)
+                # set target architecture
+                if(ENABLE_AVX2)
+                        set_property(TARGET ${target} PROPERTY ISPC_INSTRUCTION_SETS avx2-i32x4)
+                elseif(ENABLE_SSE2)
+                        target_compile_options(${target} PUBLIC "-msse2")
+                endif()
+        endif()
+endforeach()
+
+# Install configuration
+include(GNUInstallDirs)
+
+# Install shared library
+install(TARGETS ${PROJECT_NAME}_lib
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# Install headers
+install(FILES 
+    code/boolean_api.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mesh_booleans
+)

@@ -15,6 +15,7 @@ _deps
 .idea/
 .vscode/
 build/
+install/
 cmake-build-debug/
 cmake-build-release/
 xcode/
