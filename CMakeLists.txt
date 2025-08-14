@@ -202,3 +202,8 @@ install(FILES
     code/boolean_api.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mesh_booleans
 )
+
+# Install executables
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
