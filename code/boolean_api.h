@@ -1,9 +1,9 @@
 #pragma once
 
-#include <array>
 #include <bitset>
-#include <cstdint>
 #include <vector>
+
+#include <Eigen/Dense>
 
 // DLL Export/Import macros
 #ifdef _WIN32
@@ -27,17 +27,18 @@ namespace mesh_booleans {
         NONREG_UNITE = 4
     };
 
-    struct Mesh
-    {
-        std::vector<std::array<double, 3>> vertices;
-        std::vector<std::array<std::uint32_t, 3>> triangles;
-    };
 
     MESH_BOOLEANS_API void BooleanOperation(
-        const std::vector<Mesh>& meshes, 
-        const BoolOp& operation, 
-        Mesh& output, 
-        std::vector<std::bitset<32>>& labels);
+        const std::vector<Eigen::MatrixXd>& input_points,
+        const std::vector<Eigen::MatrixXi>& input_tris,
+        const BoolOp& operation,
+        Eigen::MatrixXd& output_coords,
+        Eigen::MatrixXi& output_tris,
+        std::vector<std::bitset<32>>& output_labels);
 
-    MESH_BOOLEANS_API void ResolveIntersections(const Mesh& mesh, Mesh& output);
+    MESH_BOOLEANS_API void ResolveIntersections(
+        const Eigen::MatrixXd& input_points,
+        const Eigen::MatrixXi& input_tris,
+        Eigen::MatrixXd& output_coords,
+        Eigen::MatrixXi& output_tris);
 }
