@@ -110,7 +110,7 @@ inline void mergeDuplicatedVertices(const std::vector<double> &in_coords, const 
         {
             std::array<double, 3> v = {in_coords[(3 * v_id)], in_coords[(3 * v_id) +1], in_coords[(3 * v_id) +2]};
 
-            auto ins = v_map.insert({v, v_map.size()});
+            auto ins = v_map.insert({v, static_cast<uint>(v_map.size())});
             if(ins.second) verts.push_back(&arena.init.emplace_back(v[0], v[1], v[2])); // new_vtx added
 
             tris.push_back(ins.first->second);

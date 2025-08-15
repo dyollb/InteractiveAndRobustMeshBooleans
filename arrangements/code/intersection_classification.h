@@ -45,7 +45,9 @@
 #include "aux_structure.h"
 #include <cinolib/predicates.h>
 
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
 
 inline void find_intersections(const std::vector<cinolib::vec3d> & verts, const std::vector<uint>  & tris,
                                std::vector<cinolib::ipair> & intersections);

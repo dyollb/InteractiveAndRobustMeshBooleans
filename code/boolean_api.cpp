@@ -61,14 +61,14 @@ void BooleanOperation(
     const std::vector<Eigen::MatrixXd>& input_coords,
     const std::vector<Eigen::MatrixXi>& input_tris,
     const BoolOp& operation,
-    Eigen::MatrixXd& output_coords,
+    Eigen::MatrixXd& output_points,
     Eigen::MatrixXi& output_tris,
     std::vector<std::bitset<32>>& bool_labels)
 {
     const uint num_input_points = std::accumulate(input_coords.begin(), input_coords.end(), 0u,
-                    [](uint sum, const Eigen::MatrixXd& m) { return sum + m.rows(); });
+                    [](uint sum, const Eigen::MatrixXd& m) { return sum + static_cast<uint>(m.rows()); });
     const uint num_input_tris = std::accumulate(input_tris.begin(), input_tris.end(), 0u,
-                    [](uint sum, const Eigen::MatrixXi& m) { return sum + m.rows(); });
+                    [](uint sum, const Eigen::MatrixXi& m) { return sum + static_cast<uint>(m.rows()); });
 
     std::vector<double> in_coords;
     in_coords.reserve(num_input_points * 3);
@@ -88,19 +88,20 @@ void BooleanOperation(
         }
     }
 
+    const ::BoolOp op = static_cast<::BoolOp>(operation);
     std::vector<double> bool_coords;
     std::vector<uint> bool_tris;
-    const ::BoolOp op = static_cast<::BoolOp>(operation);
+    bool_labels.clear();
 
     booleanPipeline(in_coords, in_tris, in_labels, op, bool_coords, bool_tris, bool_labels);
 
-    toEigen(bool_coords, bool_tris, output_coords, output_tris);
+    toEigen(bool_coords, bool_tris, output_points, output_tris);
 }
 
 void ResolveIntersections(
     const Eigen::MatrixXd& input_points,
     const Eigen::MatrixXi& input_tris,
-    Eigen::MatrixXd& output_coords,
+    Eigen::MatrixXd& output_points,
     Eigen::MatrixXi& output_tris)
 {
     std::vector<double> in_coords;
@@ -116,7 +117,7 @@ void ResolveIntersections(
     point_arena arean;
     solveIntersections(in_coords, in_tris, arean, out_coords, out_tris);
 
-    toEigen(out_coords, out_tris, output_coords, output_tris);
+    toEigen(out_coords, out_tris, output_points, output_tris);
 }
 
 }

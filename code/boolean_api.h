@@ -32,13 +32,13 @@ namespace mesh_booleans {
         const std::vector<Eigen::MatrixXd>& input_points,
         const std::vector<Eigen::MatrixXi>& input_tris,
         const BoolOp& operation,
-        Eigen::MatrixXd& output_coords,
+        Eigen::MatrixXd& output_points,
         Eigen::MatrixXi& output_tris,
         std::vector<std::bitset<32>>& output_labels);
 
     MESH_BOOLEANS_API void ResolveIntersections(
         const Eigen::MatrixXd& input_points,
         const Eigen::MatrixXi& input_tris,
-        Eigen::MatrixXd& output_coords,
+        Eigen::MatrixXd& output_points,
         Eigen::MatrixXi& output_tris);
 }

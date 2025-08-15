@@ -47,7 +47,9 @@
 #include "tree.h"
 #include "custom_stack.h"
 
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
 
 typedef unsigned int uint;
 

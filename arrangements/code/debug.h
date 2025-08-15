@@ -164,8 +164,6 @@ inline explicitPoint3D genericPointToExplicit(const genericPoint &p)
 
 inline std::string genericPointToString(const genericPoint &p)
 {
-    std::setprecision(std::numeric_limits<long double>::digits10 + 1);
-
     if(p.isExplicit3D())
     {
         explicitPoint3D ep = p.toExplicit3D();
