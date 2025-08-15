@@ -207,3 +207,10 @@ install(FILES
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# Install license file
+install(FILES 
+    LICENSE
+    README.md
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/mesh_booleans
+)
