@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 
 # https://cmake.org/cmake/help/git-stage/module/FetchContent.html
 include(FetchContent)
